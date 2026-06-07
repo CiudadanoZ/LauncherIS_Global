@@ -26,6 +26,38 @@ function saveState() {
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 }
 
+// --- Fetch Configuración Dinámica ---
+let cachedConfig = null;
+const CONFIG_URL = 'https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/games.json';
+
+function getGamesConfig() {
+  return new Promise((resolve) => {
+    https.get(CONFIG_URL, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          cachedConfig = JSON.parse(data);
+          resolve(cachedConfig);
+        } catch (e) {
+          resolveFallback();
+        }
+      });
+    }).on('error', () => resolveFallback());
+
+    function resolveFallback() {
+      if (cachedConfig) return resolve(cachedConfig);
+      try {
+        const configPath = path.join(__dirname, 'games.json');
+        cachedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        resolve(cachedConfig);
+      } catch(e) {
+        resolve({ games: [] });
+      }
+    }
+  });
+}
+
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
@@ -48,15 +80,10 @@ function createWindow() {
     // icon: path.join(__dirname, '..', 'public', 'icon.png'),
   });
 
-  // URL del frontend alojado en Vercel. 
-  // TODO: Actualizar esta URL cuando despliegues el frontend de Vite en Vercel.
-  const VERCEL_URL = 'https://tu-proyecto-vercel.vercel.app';
-  
   if (app.isPackaged) {
-    // En producción (cuando está compilado), carga directamente la URL de Vercel
-    mainWindow.loadURL(VERCEL_URL).catch(err => {
-      console.error('Failed to load Vercel URL, loading offline fallback...', err);
-      // Aquí se podría cargar una página de fallback local en el futuro si falla la conexión
+    // En producción (cuando está compilado), carga los archivos locales empaquetados
+    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html')).catch(err => {
+      console.error('Failed to load local HTML', err);
     });
   } else {
     // En desarrollo, carga Vite localhost
@@ -90,8 +117,7 @@ ipcMain.on('window:close', () => mainWindow.close());
 
 // Obtener configuración de juegos
 ipcMain.handle('games:getConfig', async () => {
-  const configPath = path.join(__dirname, 'games.json');
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const config = await getGamesConfig();
   
   // Enriquecer con estado local (instalado o no)
   config.games = config.games.map(game => {
@@ -115,8 +141,7 @@ ipcMain.handle('games:getConfig', async () => {
 
 // Verificar actualizaciones para un juego
 ipcMain.handle('games:checkUpdate', async (_, gameId) => {
-  const configPath = path.join(__dirname, 'games.json');
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const config = await getGamesConfig();
   const game = config.games.find(g => g.id === gameId);
   if (!game) return { hasUpdate: false };
 
@@ -135,8 +160,7 @@ ipcMain.handle('games:checkUpdate', async (_, gameId) => {
 
 // Descargar e instalar juego
 ipcMain.handle('games:install', async (_, gameId) => {
-  const configPath = path.join(__dirname, 'games.json');
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const config = await getGamesConfig();
   const game = config.games.find(g => g.id === gameId);
   if (!game) throw new Error('Juego no encontrado');
 
@@ -178,8 +202,7 @@ ipcMain.handle('games:install', async (_, gameId) => {
 
 // Lanzar juego
 ipcMain.handle('games:launch', async (_, gameId) => {
-  const configPath = path.join(__dirname, 'games.json');
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const config = await getGamesConfig();
   const game = config.games.find(g => g.id === gameId);
 
   let gameDir = null;
