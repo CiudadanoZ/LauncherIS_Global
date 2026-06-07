@@ -131,7 +131,11 @@ export default function Hero({ game, isDesktop }) {
           </button>
         ) : (
           <>
-            {status === 'idle' && (
+            {game.comingSoon ? (
+              <button className="btn-primary" disabled style={{ '--accent': '#888', padding: '16px 48px', fontSize: '1.2rem', opacity: 0.7, cursor: 'not-allowed' }}>
+                Próximamente
+              </button>
+            ) : status === 'idle' && (
               <button className="btn-primary" onClick={handleInstall} style={{ '--accent': game.accentColor }}>
                 <Download size={20} />
                 Instalar Juego
