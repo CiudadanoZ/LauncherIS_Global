@@ -114,10 +114,10 @@ export default function Hero({ game, isDesktop }) {
             <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '4px' }}>Tamaño</div>
             <div style={{ fontWeight: 600 }}>{game.size}</div>
           </div>
-          {game.installedVersion && (
+          {(game.installedVersion || game.version) && (
             <div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '4px' }}>Versión</div>
-              <div style={{ fontWeight: 600 }}>{game.installedVersion}</div>
+              <div style={{ fontWeight: 600 }}>{game.installedVersion || game.version}</div>
             </div>
           )}
         </div>
