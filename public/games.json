@@ -9,13 +9,13 @@
       "description": "El inicio de todo. Descubre los orígenes del mundo de las sombras y el destino del héroe elegido. Una aventura épica de rol que te sumergirá en un universo oscuro y misterioso.",
       "engine": "RPG Maker MV",
       "genre": "RPG",
-      "size": "~350 MB",
+      "size": "784 MB",
       "glyph": "TSW",
       "accentColor": "#4A90E2",
       "artBg": "linear-gradient(160deg, #05080F 0%, #0D1525 40%, #151030 70%, #050810 100%)",
       "heroBg": "linear-gradient(135deg, #050810 0%, #0D1830 40%, #081525 70%, #030810 100%)",
       "githubRepo": "CiudadanoZ/tsw-origin",
-      "version": "1.0.0"
+      "version": "2.0"
     },
     {
       "id": "tsw-revival",
@@ -24,13 +24,13 @@
       "description": "Tras los eventos del origen, el mundo de las sombras resurge con una fuerza aún mayor. Nuevos aliados, nuevos enemigos, y secretos que cambiarán todo lo que creías saber.",
       "engine": "RPG Maker MV",
       "genre": "RPG",
-      "size": "~480 MB",
+      "size": "1,01 GB",
       "glyph": "TSW",
       "accentColor": "#9B59B6",
       "artBg": "linear-gradient(160deg, #100520 0%, #1A0830 40%, #0F1525 70%, #050510 100%)",
       "heroBg": "linear-gradient(135deg, #0A0318 0%, #180825 40%, #0F1020 70%, #050310 100%)",
       "githubRepo": "CiudadanoZ/tsw-revival",
-      "version": "1.0.0"
+      "version": "2.5"
     },
     {
       "id": "tsw-darkness",
