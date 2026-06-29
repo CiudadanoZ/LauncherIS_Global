@@ -27,11 +27,12 @@ const fallbackGames = [
     "description": "Bienvenidos a Los Reinos de Aethermoor\nUn viaje incremental a través de tierras olvidadas y peligros ancestrales.\n¡Ya disponible la temporada 3: Guerra de Banderas!\n\nEn este juego IDLE de aventuras y fantasía, tu leyenda no se detiene nunca. Tu héroe se adentrará en los confines de un mundo lleno de magia, tesoros y peligros que acechan en cada sombra.\nAhora también incluye un modo llamado The Shadow World Saga, un mundo MMORPG y supervivencia donde podrás recorrer los reinos de Aethermoor, enfrentarte a enemigos, y completar misiones por el amplio mundo abierto.",
     "engine": "Web (React / Vite)",
     "genre": "RPG / Estrategia",
-    "size": "1,0 GB",
+    "size": "En la nube",
     "glyph": "RA",
     "accentColor": "#2ECC71",
     "artBg": "linear-gradient(160deg, #081008 0%, #102510 40%, #0A2015 70%, #050F05 100%)",
-    "heroBg": "linear-gradient(135deg, #051008 0%, #0D2510 40%, #081A10 70%, #040C05 100%)"
+    "heroBg": "linear-gradient(135deg, #051008 0%, #0D2510 40%, #081A10 70%, #040C05 100%)",
+    "webUrl": "https://aethermoor-idle.vercel.app"
   }
 ];
 
@@ -40,23 +41,26 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  useEffect(() => {
-    async function loadGames() {
-      if (window.launcher) {
-        setIsDesktop(true);
-        try {
-          const config = await window.launcher.getConfig();
-          setGames(config.games);
-          if (config.games.length > 0) setSelectedGame(config.games[0]);
-        } catch (e) {
-          console.error("Error loading games from launcher:", e);
-        }
-      } else {
-        setIsDesktop(false);
-        setGames(fallbackGames);
-        setSelectedGame(fallbackGames[0]);
+  async function loadGames(preserveSelectionId) {
+    if (window.launcher) {
+      setIsDesktop(true);
+      try {
+        const config = await window.launcher.getConfig();
+        setGames(config.games);
+        // Conservar el juego seleccionado tras recargar; si no, el primero.
+        const keep = config.games.find(g => g.id === preserveSelectionId);
+        setSelectedGame(keep || config.games[0] || null);
+      } catch (e) {
+        console.error("Error loading games from launcher:", e);
       }
+    } else {
+      setIsDesktop(false);
+      setGames(fallbackGames);
+      setSelectedGame(fallbackGames[0]);
     }
+  }
+
+  useEffect(() => {
     loadGames();
   }, []);
 
@@ -77,7 +81,7 @@ function App() {
         />
         
         <div style={{ flex: 1, padding: '40px', overflowY: 'auto', paddingTop: '60px' }}>
-          <Hero game={selectedGame} isDesktop={isDesktop} />
+          <Hero game={selectedGame} isDesktop={isDesktop} onLibraryChange={() => loadGames(selectedGame.id)} />
         </div>
       </div>
     </div>

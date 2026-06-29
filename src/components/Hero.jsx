@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Download, Trash2, ExternalLink } from 'lucide-react';
 
-export default function Hero({ game, isDesktop }) {
+export default function Hero({ game, isDesktop, onLibraryChange }) {
   const [status, setStatus] = useState('idle'); // idle, downloading, extracting, installed
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -36,6 +36,9 @@ export default function Hero({ game, isDesktop }) {
           }
         }
       });
+
+      // Limpieza: retirar el listener al desmontar o cambiar de juego
+      return () => window.launcher.removeDownloadListeners();
     }
   }, [game.id, game.installed, isDesktop]);
 
@@ -50,7 +53,9 @@ export default function Hero({ game, isDesktop }) {
       setError(null);
       await window.launcher.install(game.id);
       setStatus('installed');
-      // Update config behind the scenes might be needed, but app state reload does it
+      setHasUpdate(false);
+      // Recargar la biblioteca para reflejar el nuevo estado (sidebar, versión)
+      if (onLibraryChange) onLibraryChange();
     } catch (e) {
       console.error(e);
       setError(e.message);
@@ -68,12 +73,22 @@ export default function Hero({ game, isDesktop }) {
     }
   };
 
+  // Juego web (alojado, p. ej. en Vercel): abre la URL en el navegador.
+  const handlePlayWeb = () => {
+    if (isDesktop && window.launcher) {
+      window.launcher.openLink(game.webUrl);
+    } else {
+      window.open(game.webUrl, '_blank', 'noopener');
+    }
+  };
+
   const handleUninstall = async () => {
     if (!isDesktop) return;
     try {
       const res = await window.launcher.uninstall(game.id);
       if (res.success) {
         setStatus('idle');
+        if (onLibraryChange) onLibraryChange();
       }
     } catch (e) {
       console.error(e);
@@ -124,24 +139,30 @@ export default function Hero({ game, isDesktop }) {
       </div>
 
       <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', marginTop: '40px' }}>
-        {!isDesktop ? (
+        {game.comingSoon ? (
+          <button className="btn-primary" disabled style={{ '--accent': '#888', padding: '16px 48px', fontSize: '1.2rem', opacity: 0.7, cursor: 'not-allowed' }}>
+            Próximamente
+          </button>
+        ) : game.webUrl ? (
+          <button className="btn-primary" onClick={handlePlayWeb} style={{ '--accent': game.accentColor, padding: '16px 48px', fontSize: '1.2rem' }}>
+            <Play size={24} fill="currentColor" />
+            JUGAR
+            <ExternalLink size={18} style={{ marginLeft: '4px', opacity: 0.7 }} />
+          </button>
+        ) : !isDesktop ? (
           <button className="btn-primary" onClick={handleInstall} style={{ '--accent': game.accentColor }}>
             <Download size={20} />
             Descargar Launcher para Jugar
           </button>
         ) : (
           <>
-            {game.comingSoon ? (
-              <button className="btn-primary" disabled style={{ '--accent': '#888', padding: '16px 48px', fontSize: '1.2rem', opacity: 0.7, cursor: 'not-allowed' }}>
-                Próximamente
-              </button>
-            ) : status === 'idle' && (
+            {status === 'idle' && (
               <button className="btn-primary" onClick={handleInstall} style={{ '--accent': game.accentColor }}>
                 <Download size={20} />
                 Instalar Juego
               </button>
             )}
-            
+
             {(status === 'downloading' || status === 'extracting') && (
               <div style={{ flex: 1, maxWidth: '400px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem' }}>
