@@ -25,6 +25,9 @@ contextBridge.exposeInMainWorld('launcher', {
   getSettings: () => ipcRenderer.invoke('settings:get'),
   changeGamesDir: () => ipcRenderer.invoke('settings:changeGamesDir'),
 
+  // Versión del launcher
+  getVersion: () => ipcRenderer.invoke('app:getVersion'),
+
   // Links externos
   openLink: (url) => ipcRenderer.send('link:open', url),
 });

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Download } from 'lucide-react';
 import Titlebar from './components/Titlebar';
 import Sidebar from './components/Sidebar';
 import Hero from './components/Hero';
@@ -43,10 +44,24 @@ const EMBERS = Array.from({ length: 14 }, (_, i) => ({
   delay: `${(i % 7) * 1.3}s`,
 }));
 
+// Compara versiones "1.2.3" → 1 si a>b, -1 si a<b, 0 iguales
+function compareVersions(a, b) {
+  const pa = String(a).split('.').map(n => parseInt(n, 10) || 0);
+  const pb = String(b).split('.').map(n => parseInt(n, 10) || 0);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    if ((pa[i] || 0) > (pb[i] || 0)) return 1;
+    if ((pa[i] || 0) < (pb[i] || 0)) return -1;
+  }
+  return 0;
+}
+
+const LAUNCHER_RELEASES_URL = 'https://github.com/CiudadanoZ/LauncherIS_Global/releases';
+
 function App() {
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [launcherUpdate, setLauncherUpdate] = useState(null); // { latest, url } o null
 
   async function loadGames(preserveSelectionId) {
     if (window.launcher) {
@@ -57,6 +72,18 @@ function App() {
         // Conservar el juego seleccionado tras recargar; si no, el primero.
         const keep = config.games.find(g => g.id === preserveSelectionId);
         setSelectedGame(keep || config.games[0] || null);
+
+        // Avisar si el catálogo anuncia una versión del launcher más nueva que la instalada
+        try {
+          if (config.launcherVersion && window.launcher.getVersion) {
+            const current = await window.launcher.getVersion();
+            if (compareVersions(config.launcherVersion, current) > 0) {
+              setLauncherUpdate({ latest: config.launcherVersion, url: config.launcherDownloadUrl || LAUNCHER_RELEASES_URL });
+            } else {
+              setLauncherUpdate(null);
+            }
+          }
+        } catch (_) { /* no bloquear la carga por esto */ }
       } catch (e) {
         console.error("Error loading games from launcher:", e);
       }
@@ -95,6 +122,23 @@ function App() {
         />
 
         <div style={{ flex: 1, padding: '40px', overflowY: 'auto', paddingTop: '60px' }}>
+          {launcherUpdate && (
+            <div
+              onClick={() => window.launcher?.openLink(launcherUpdate.url)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 20px', marginBottom: '24px', borderRadius: '12px',
+                background: 'rgba(243, 156, 18, 0.12)', border: '1px solid rgba(243, 156, 18, 0.4)',
+                color: '#F39C12', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600
+              }}
+              title="Abrir la página de descarga"
+            >
+              <Download size={18} />
+              <span style={{ color: 'rgba(255,255,255,0.9)' }}>
+                Hay una nueva versión del launcher disponible (v{launcherUpdate.latest}). Haz clic para descargarla.
+              </span>
+            </div>
+          )}
           <Hero key={selectedGame.id} game={selectedGame} isDesktop={isDesktop} onLibraryChange={() => loadGames(selectedGame.id)} />
         </div>
       </div>

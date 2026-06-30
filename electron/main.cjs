@@ -337,6 +337,9 @@ ipcMain.handle('settings:changeGamesDir', async () => {
 
 ipcMain.handle('settings:get', () => state.settings);
 
+// Versión instalada del propio launcher (para comparar con launcherVersion del catálogo)
+ipcMain.handle('app:getVersion', () => app.getVersion());
+
 ipcMain.on('link:open', (_, url) => shell.openExternal(url));
 
 // ============================================================
