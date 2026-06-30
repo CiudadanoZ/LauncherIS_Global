@@ -36,6 +36,13 @@ const fallbackGames = [
   }
 ];
 
+// Ascuas ambientales: posiciones/tiempos fijos (no se regeneran en cada render)
+const EMBERS = Array.from({ length: 14 }, (_, i) => ({
+  left: `${(i * 7 + (i % 3) * 5) % 100}%`,
+  dur: `${9 + (i % 5) * 2.5}s`,
+  delay: `${(i % 7) * 1.3}s`,
+}));
+
 function App() {
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
@@ -69,19 +76,26 @@ function App() {
   }
 
   return (
-    <div className="app-container" style={{ backgroundImage: selectedGame.artBg }}>
+    <div className="app-container" style={{ backgroundImage: selectedGame.artBg, '--accent': selectedGame.accentColor, '--accent-glow': `${selectedGame.accentColor}66` }}>
       <div className="app-overlay"></div>
+      <div className="app-vignette"></div>
+      <div className="app-grain"></div>
+      <div className="ambient-embers">
+        {EMBERS.map((e, i) => (
+          <span key={i} className="ember" style={{ left: e.left, animationDuration: e.dur, animationDelay: e.delay }}></span>
+        ))}
+      </div>
       <Titlebar />
-      
-      <div style={{ display: 'flex', width: '100%', height: '100%', zIndex: 10 }}>
-        <Sidebar 
-          games={games} 
-          selectedGame={selectedGame} 
-          onSelectGame={setSelectedGame} 
+
+      <div style={{ display: 'flex', width: '100%', height: '100%', zIndex: 10, position: 'relative' }}>
+        <Sidebar
+          games={games}
+          selectedGame={selectedGame}
+          onSelectGame={setSelectedGame}
         />
-        
+
         <div style={{ flex: 1, padding: '40px', overflowY: 'auto', paddingTop: '60px' }}>
-          <Hero game={selectedGame} isDesktop={isDesktop} onLibraryChange={() => loadGames(selectedGame.id)} />
+          <Hero key={selectedGame.id} game={selectedGame} isDesktop={isDesktop} onLibraryChange={() => loadGames(selectedGame.id)} />
         </div>
       </div>
     </div>

@@ -21,66 +21,27 @@ export default function Sidebar({ games, selectedGame, onSelectGame }) {
           style={{ width: '48px', height: '48px', borderRadius: '12px', boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)' }} 
           onError={(e) => e.target.style.display = 'none'} 
         />
-        <h2 style={{ 
-          fontSize: '1.5rem', 
-          letterSpacing: '3px', 
-          textTransform: 'uppercase', 
-          fontWeight: 900,
-          background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textShadow: '0px 4px 15px rgba(255, 165, 0, 0.3)',
-          margin: 0,
-          fontFamily: "'Cinzel', 'Trajan Pro', serif, var(--font-display)"
-        }}>
-          IS Launcher
-        </h2>
+        <h2 className="epic-logo">IS Launcher</h2>
       </div>
       
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 12px' }}>
         {games.map(game => (
-          <div 
+          <div
             key={game.id}
             onClick={() => onSelectGame(game)}
-            style={{
-              padding: '12px 16px',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              background: selectedGame?.id === game.id ? 'rgba(255,255,255,0.1)' : 'transparent',
-              border: `1px solid ${selectedGame?.id === game.id ? 'rgba(255,255,255,0.15)' : 'transparent'}`,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              if (selectedGame?.id !== game.id) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            }}
-            onMouseLeave={e => {
-              if (selectedGame?.id !== game.id) e.currentTarget.style.background = 'transparent';
-            }}
+            className={`game-item${selectedGame?.id === game.id ? ' active' : ''}`}
+            style={{ '--item-accent': game.accentColor }}
           >
-            <div style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '10px',
-              background: game.accentColor,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold',
-              fontSize: '1.1rem',
-              fontFamily: 'var(--font-display)',
-              boxShadow: `0 0 15px ${game.accentColor}50`
-            }}>
+            <div className="game-glyph" style={{ '--item-accent': game.accentColor }}>
               {game.glyph}
             </div>
             <div style={{ flex: 1, overflow: 'hidden' }}>
               <div style={{ fontWeight: '600', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: '0.95rem' }}>{game.name}</div>
-              <div style={{ fontSize: '0.8rem', color: game.installed ? '#2ECC71' : 'var(--text-muted)', marginTop: '4px' }}>
-                {game.installed ? 'Instalado' : game.genre}
-              </div>
+              {game.installed ? (
+                <div className="install-badge">Instalado</div>
+              ) : (
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>{game.genre}</div>
+              )}
             </div>
           </div>
         ))}

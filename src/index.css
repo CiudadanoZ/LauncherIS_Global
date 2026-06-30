@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&family=Cinzel:wght@500;600;700;800;900&display=swap');
 
 :root {
   /* Color Palette */
@@ -10,11 +10,12 @@
   --text-main: #FFFFFF;
   --text-muted: #8A94A6;
   --border-light: rgba(255, 255, 255, 0.08);
-  
+
   /* Typography */
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Outfit', sans-serif;
-  
+  --font-epic: 'Cinzel', 'Trajan Pro', serif;
+
   /* Effects */
   --glass-blur: blur(12px);
   --transition-fast: 0.2s ease;
@@ -76,6 +77,58 @@ body {
   background: linear-gradient(to right, rgba(5,8,16,1) 0%, rgba(5,8,16,0.6) 50%, rgba(5,8,16,0.3) 100%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Viñeta cinematográfica: oscurece los bordes para dar foco y profundidad */
+.app-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(120% 120% at 50% 40%, transparent 45%, rgba(0,0,0,0.55) 100%);
+}
+
+/* Grano de película sutil para textura de "estudio AAA" */
+.app-grain {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 0.6s steps(2) infinite;
+}
+
+@keyframes grainShift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-6px, 4px); }
+  100% { transform: translate(4px, -5px); }
+}
+
+/* Ascuas flotantes en el color de acento */
+.ambient-embers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.ember {
+  position: absolute;
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px 1px var(--accent);
+  opacity: 0;
+  animation: emberRise linear infinite;
+}
+@keyframes emberRise {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-100vh) translateX(20px) scale(0.4); opacity: 0; }
 }
 
 /* Window Controls (Electron Drag) */
@@ -169,17 +222,191 @@ h1, h2, h3 {
   font-family: var(--font-display);
 }
 
+/* Título de juego épico */
+.hero-title {
+  font-family: var(--font-epic);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.7), 0 0 1px rgba(255,255,255,0.2);
+}
+
+/* Botón JUGAR protagonista: degradado, glow latente y barrido de brillo */
+.btn-play {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: var(--font-epic);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 18px 56px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 65%, #000) 100%);
+  box-shadow: 0 0 22px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  animation: playPulse 2.6s ease-in-out infinite;
+}
+.btn-play:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 40px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.35);
+}
+.btn-play::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: skewX(-20deg);
+}
+.btn-play:hover::after {
+  animation: shineSweep 0.85s ease;
+}
+@keyframes shineSweep {
+  to { left: 160%; }
+}
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 0 18px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.25); }
+  50%      { box-shadow: 0 0 34px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.25); }
+}
+
+/* Revelado cinematográfico escalonado al cambiar de juego */
+.reveal {
+  opacity: 0;
+  animation: contentReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.15s; }
+.reveal-3 { animation-delay: 0.27s; }
+.reveal-4 { animation-delay: 0.40s; }
+.reveal-5 { animation-delay: 0.52s; }
+@keyframes contentReveal {
+  from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Logo IS Launcher con brillo dorado en movimiento */
+.epic-logo {
+  font-family: var(--font-epic);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(100deg, #FFD700 20%, #FFF3B0 45%, #FFA500 55%, #FF8C00 80%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(255,165,0,0.35));
+  animation: logoShimmer 5s linear infinite;
+}
+@keyframes logoShimmer {
+  to { background-position: 250% center; }
+}
+
 /* Progress bar */
 .progress-container {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: rgba(255,255,255,0.1);
   border-radius: 10px;
   overflow: hidden;
   margin-top: 10px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
 }
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  border-radius: 10px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 70%, #000) 0%,
+    var(--accent) 50%,
+    color-mix(in srgb, var(--accent) 70%, #fff) 100%);
+  background-size: 200% 100%;
+  box-shadow: 0 0 12px var(--accent-glow);
   transition: width 0.3s ease;
+  animation: progressShimmer 1.4s linear infinite;
+}
+@keyframes progressShimmer {
+  to { background-position: -200% 0; }
+}
+
+/* --- Sidebar: ítems de juego --- */
+.game-item {
+  position: relative;
+  padding: 12px 16px 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid transparent;
+  transition: background var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+}
+.game-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  border-radius: 0 3px 3px 0;
+  background: var(--item-accent, #fff);
+  box-shadow: 0 0 10px var(--item-accent, #fff);
+  transition: height var(--transition-smooth);
+}
+.game-item:hover {
+  background: rgba(255,255,255,0.05);
+  transform: translateX(2px);
+}
+.game-item.active {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.15);
+}
+.game-item.active::before {
+  height: 60%;
+}
+.game-glyph {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  font-family: var(--font-epic);
+  flex-shrink: 0;
+  background: linear-gradient(150deg, var(--item-accent) 0%, color-mix(in srgb, var(--item-accent) 55%, #000) 100%);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--item-accent) 45%, transparent), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: transform var(--transition-fast);
+}
+.game-item:hover .game-glyph { transform: scale(1.06); }
+.install-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2ECC71;
+  margin-top: 4px;
+}
+.install-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ECC71;
+  box-shadow: 0 0 6px #2ECC71;
 }

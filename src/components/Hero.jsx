@@ -98,29 +98,30 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ flex: 1 }}>
-        <div style={{
+        <div className="reveal reveal-1" style={{
           display: 'inline-block',
-          padding: '6px 12px',
+          padding: '6px 14px',
           background: 'rgba(255,255,255,0.1)',
           borderRadius: '20px',
           fontSize: '0.85rem',
           fontWeight: 600,
+          letterSpacing: '0.5px',
           color: game.accentColor,
           marginBottom: '20px',
           border: `1px solid ${game.accentColor}40`
         }}>
           {game.tag}
         </div>
-        
-        <h1 style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '24px', textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+
+        <h1 className="hero-title reveal reveal-2" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '24px' }}>
           {game.name}
         </h1>
-        
-        <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px', lineHeight: '1.6', textShadow: '0 2px 10px rgba(0,0,0,0.5)', whiteSpace: 'pre-wrap' }}>
+
+        <p className="reveal reveal-3" style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px', lineHeight: '1.6', textShadow: '0 2px 10px rgba(0,0,0,0.5)', whiteSpace: 'pre-wrap' }}>
           {game.description}
         </p>
 
-        <div style={{ display: 'flex', gap: '32px', marginTop: '40px' }}>
+        <div className="reveal reveal-4" style={{ display: 'flex', gap: '32px', marginTop: '40px' }}>
           <div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '4px' }}>Motor</div>
             <div style={{ fontWeight: 600 }}>{game.engine}</div>
@@ -138,16 +139,16 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', marginTop: '40px' }}>
+      <div className="glass-panel reveal reveal-5" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', marginTop: '40px' }}>
         {game.comingSoon ? (
           <button className="btn-primary" disabled style={{ '--accent': '#888', padding: '16px 48px', fontSize: '1.2rem', opacity: 0.7, cursor: 'not-allowed' }}>
             Próximamente
           </button>
         ) : game.webUrl ? (
-          <button className="btn-primary" onClick={handlePlayWeb} style={{ '--accent': game.accentColor, padding: '16px 48px', fontSize: '1.2rem' }}>
+          <button className="btn-play" onClick={handlePlayWeb} style={{ '--accent': game.accentColor }}>
             <Play size={24} fill="currentColor" />
             JUGAR
-            <ExternalLink size={18} style={{ marginLeft: '4px', opacity: 0.7 }} />
+            <ExternalLink size={18} style={{ marginLeft: '2px', opacity: 0.75 }} />
           </button>
         ) : !isDesktop ? (
           <button className="btn-primary" onClick={handleInstall} style={{ '--accent': game.accentColor }}>
@@ -183,7 +184,7 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
                     Actualizar Juego
                   </button>
                 ) : (
-                  <button className="btn-primary" onClick={handlePlay} style={{ '--accent': game.accentColor, padding: '16px 48px', fontSize: '1.2rem' }}>
+                  <button className="btn-play" onClick={handlePlay} style={{ '--accent': game.accentColor }}>
                     <Play size={24} fill="currentColor" />
                     JUGAR
                   </button>
