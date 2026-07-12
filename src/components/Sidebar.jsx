@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gamepad2, Settings, Download } from 'lucide-react';
+import { Settings, Download, FileText } from 'lucide-react';
 
 export default function Sidebar({ games, selectedGame, onSelectGame }) {
   return (
@@ -63,12 +63,21 @@ export default function Sidebar({ games, selectedGame, onSelectGame }) {
           }}
           title="Cambiar directorio de instalación"
         />
-        <Download 
-          size={22} 
-          style={{ cursor: 'pointer', opacity: 0.5 }} 
-          className="hover-white" 
+        <Download
+          size={22}
+          style={{ cursor: 'pointer', opacity: 0.5 }}
+          className="hover-white"
           title="Cola de descargas (Próximamente)"
         />
+        {window.launcher && (
+          <FileText
+            size={22}
+            style={{ cursor: 'pointer' }}
+            className="hover-white"
+            onClick={() => window.launcher.openLogFolder()}
+            title="Abrir carpeta de registros (soporte)"
+          />
+        )}
       </div>
       <style>{`
         .hover-white { transition: 0.2s; }

@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('launcher', {
   getConfig: () => ipcRenderer.invoke('games:getConfig'),
   checkUpdate: (gameId) => ipcRenderer.invoke('games:checkUpdate', gameId),
   install: (gameId) => ipcRenderer.invoke('games:install', gameId),
+  cancelInstall: (gameId) => ipcRenderer.invoke('games:cancelInstall', gameId),
   launch: (gameId) => ipcRenderer.invoke('games:launch', gameId),
   uninstall: (gameId) => ipcRenderer.invoke('games:uninstall', gameId),
 
@@ -27,6 +28,9 @@ contextBridge.exposeInMainWorld('launcher', {
 
   // Versión del launcher
   getVersion: () => ipcRenderer.invoke('app:getVersion'),
+
+  // Soporte: abrir la carpeta del log
+  openLogFolder: () => ipcRenderer.invoke('app:openLogFolder'),
 
   // Links externos
   openLink: (url) => ipcRenderer.send('link:open', url),

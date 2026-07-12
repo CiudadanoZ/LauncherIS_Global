@@ -8,6 +8,20 @@ const { exec } = require('child_process');
 const USER_DATA = app.getPath('userData');
 const GAMES_DIR = path.join(USER_DATA, 'games');
 const STATE_FILE = path.join(USER_DATA, 'state.json');
+const LOG_FILE = path.join(USER_DATA, 'launcher.log');
+
+// --- Logging a archivo (para soporte: no hay DevTools en producción) ---
+function log(...args) {
+  const stamp = new Date().toISOString();
+  const text = args.map(a =>
+    a instanceof Error ? (a.stack || a.message)
+    : typeof a === 'object' ? JSON.stringify(a)
+    : String(a)
+  ).join(' ');
+  try { fs.appendFileSync(LOG_FILE, `[${stamp}] ${text}\n`); } catch (_) {}
+}
+process.on('uncaughtException', (e) => log('UNCAUGHT', e));
+process.on('unhandledRejection', (e) => log('UNHANDLED_REJECTION', e));
 
 // --- Estado inicial ---
 let state = loadState();
@@ -68,9 +82,12 @@ function ensureDir(dir) {
 
 // --- Crear ventana principal ---
 function createWindow() {
+  const saved = state.settings.windowBounds || {};
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 760,
+    width: saved.width || 1200,
+    height: saved.height || 760,
+    x: saved.x,
+    y: saved.y,
     minWidth: 1000,
     minHeight: 650,
     frame: false,
@@ -81,7 +98,16 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    // icon: path.join(__dirname, '..', 'public', 'icon.png'),
+    icon: path.join(__dirname, '..', 'build', 'icon.ico'),
+  });
+
+  if (state.settings.windowMaximized) mainWindow.maximize();
+
+  // Guardar tamaño/posición al cerrar (solo si no está maximizada)
+  mainWindow.on('close', () => {
+    state.settings.windowMaximized = mainWindow.isMaximized();
+    if (!mainWindow.isMaximized()) state.settings.windowBounds = mainWindow.getBounds();
+    saveState();
   });
 
   if (app.isPackaged) {
@@ -98,6 +124,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
   ensureDir(GAMES_DIR);
+  log('launcher iniciado', app.getVersion());
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -162,11 +189,16 @@ ipcMain.handle('games:checkUpdate', async (_, gameId) => {
   }
 });
 
+// Instalaciones en curso (para poder cancelarlas)
+const activeInstalls = new Map();
+
 // Descargar e instalar juego
 ipcMain.handle('games:install', async (_, gameId) => {
   const config = await getGamesConfig();
   const game = config.games.find(g => g.id === gameId);
   if (!game) throw new Error('Juego no encontrado');
+
+  if (activeInstalls.has(gameId)) throw new Error('Ya hay una descarga en curso para este juego');
 
   const gamesDir = state.settings.gamesDir || GAMES_DIR;
   ensureDir(gamesDir);
@@ -185,6 +217,10 @@ ipcMain.handle('games:install', async (_, gameId) => {
   if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true, force: true });
   if (fs.existsSync(backupDir)) fs.rmSync(backupDir, { recursive: true, force: true });
 
+  const controller = new AbortController();
+  activeInstalls.set(gameId, controller);
+  log('install:start', gameId);
+
   try {
     // Obtener el release de GitHub una sola vez y reutilizarlo (evita gastar
     // dos peticiones contra el límite de la API de GitHub).
@@ -192,11 +228,12 @@ ipcMain.handle('games:install', async (_, gameId) => {
     if (game.githubRepo) release = await fetchLatestRelease(game.githubRepo);
 
     const downloadUrl = await getDownloadUrl(game, release);
+    log('install:download', gameId, downloadUrl);
 
-    // Descargar con progreso
+    // Descargar con progreso (cancelable vía signal)
     await downloadFile(downloadUrl, zipPath, (progress) => {
       mainWindow.webContents.send('games:downloadProgress', { gameId, progress });
-    });
+    }, controller.signal);
 
     // Descomprimir SIEMPRE a una carpeta temporal: si la extracción falla, la
     // instalación anterior permanece intacta (actualización atómica).
@@ -225,6 +262,7 @@ ipcMain.handle('games:install', async (_, gameId) => {
     saveState();
 
     mainWindow.webContents.send('games:downloadProgress', { gameId, progress: 100, status: 'done' });
+    log('install:done', gameId, version);
     return { success: true, path: gameDir };
   } catch (e) {
     // Limpiar temporales. La instalación previa (si la había) queda intacta:
@@ -238,8 +276,20 @@ ipcMain.handle('games:install', async (_, gameId) => {
         fs.rmSync(backupDir, { recursive: true, force: true });
       }
     }
+    const cancelled = controller.signal.aborted;
+    log(cancelled ? 'install:cancelled' : 'install:error', gameId, cancelled ? '' : e);
+    if (cancelled) return { cancelled: true };
     throw e;
+  } finally {
+    activeInstalls.delete(gameId);
   }
+});
+
+// Cancelar una descarga/instalación en curso
+ipcMain.handle('games:cancelInstall', (_, gameId) => {
+  const controller = activeInstalls.get(gameId);
+  if (controller) { controller.abort(); return { cancelled: true }; }
+  return { cancelled: false };
 });
 
 // Lanzar juego
@@ -284,16 +334,22 @@ ipcMain.handle('games:launch', async (_, gameId) => {
     exePath = process.platform === 'win32' ? 'npm.cmd' : 'npm';
   }
 
-  if (!exePath) throw new Error('No se encontró el ejecutable del juego en ' + gameDir);
+  if (!exePath) {
+    log('launch:error', gameId, 'ejecutable no encontrado en ' + gameDir);
+    throw new Error('No se encontró el ejecutable del juego en ' + gameDir);
+  }
+
+  log('launch', gameId, exePath);
+  const onExec = (err) => { if (err) log('launch:execError', gameId, err); };
 
   if (isNodeProject) {
-    exec(`"${exePath}" run dev`, { cwd: gameDir });
+    exec(`"${exePath}" run dev`, { cwd: gameDir }, onExec);
   } else if (process.platform === 'win32') {
-    exec(`"${exePath}"`, { cwd: path.dirname(exePath) });
+    exec(`"${exePath}"`, { cwd: path.dirname(exePath) }, onExec);
   } else if (process.platform === 'darwin') {
-    exec(`open "${exePath}"`, { cwd: path.dirname(exePath) });
+    exec(`open "${exePath}"`, { cwd: path.dirname(exePath) }, onExec);
   } else {
-    exec(`xdg-open "${exePath}"`, { cwd: path.dirname(exePath) });
+    exec(`xdg-open "${exePath}"`, { cwd: path.dirname(exePath) }, onExec);
   }
 
   return { success: true };
@@ -340,11 +396,31 @@ ipcMain.handle('settings:get', () => state.settings);
 // Versión instalada del propio launcher (para comparar con launcherVersion del catálogo)
 ipcMain.handle('app:getVersion', () => app.getVersion());
 
-ipcMain.on('link:open', (_, url) => shell.openExternal(url));
+ipcMain.on('link:open', (_, url) => {
+  // Solo abrir URLs web; evita protocolos peligrosos (file:, javascript:, etc.)
+  // si el catálogo remoto llegara a manipularse.
+  if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+    shell.openExternal(url);
+  } else {
+    log('link:open rechazado', url);
+  }
+});
+
+// Abrir el log / carpeta de datos (útil para soporte)
+ipcMain.handle('app:openLogFolder', () => shell.showItemInFolder(LOG_FILE));
 
 // ============================================================
 // FUNCIONES DE RED
 // ============================================================
+
+// Cabeceras para la API de GitHub. Si hay un token (variable de entorno
+// GITHUB_TOKEN o settings.githubToken), se usa para subir el límite de 60→5000/h.
+function githubHeaders() {
+  const headers = { 'User-Agent': 'LauncherIS_Global/1.0' };
+  const token = process.env.GITHUB_TOKEN || state.settings.githubToken;
+  if (token) headers['Authorization'] = `token ${token}`;
+  return headers;
+}
 
 // Obtiene el release más reciente desde la API de GitHub (una sola petición,
 // reutilizable por fetchLatestVersion y getDownloadUrl).
@@ -353,7 +429,7 @@ function fetchLatestRelease(repo) {
     const options = {
       hostname: 'api.github.com',
       path: `/repos/${repo}/releases/latest`,
-      headers: { 'User-Agent': 'LauncherIS_Global/1.0' },
+      headers: githubHeaders(),
     };
     https.get(options, (res) => {
       let data = '';
@@ -400,14 +476,15 @@ async function getDownloadUrl(game, release = null) {
   throw new Error('No hay URL de descarga configurada');
 }
 
-function downloadFile(url, destPath, onProgress, redirects = 0) {
+function downloadFile(url, destPath, onProgress, signal, redirects = 0) {
   return new Promise((resolve, reject) => {
     if (redirects > 5) return reject(new Error('Demasiadas redirecciones'));
-    https.get(url, (res) => {
+    if (signal && signal.aborted) return reject(new Error('Descarga cancelada'));
+    const req = https.get(url, { signal }, (res) => {
       // Seguir redirecciones (los assets de GitHub redirigen a otro host)
       if ([301, 302, 307, 308].includes(res.statusCode)) {
         res.resume();
-        return downloadFile(res.headers.location, destPath, onProgress, redirects + 1)
+        return downloadFile(res.headers.location, destPath, onProgress, signal, redirects + 1)
           .then(resolve, reject);
       }
       if (res.statusCode !== 200) {
@@ -420,6 +497,9 @@ function downloadFile(url, destPath, onProgress, redirects = 0) {
       // Se crea el archivo solo tras validar el status, para no dejar
       // un .zip vacío o corrupto si la petición falla.
       const file = fs.createWriteStream(destPath);
+      // Al cancelar, cerrar el archivo para liberar el handle y poder borrarlo
+      const onAbort = () => file.destroy();
+      if (signal) signal.addEventListener('abort', onAbort, { once: true });
 
       res.on('data', (chunk) => {
         downloaded += chunk.length;
@@ -428,10 +508,14 @@ function downloadFile(url, destPath, onProgress, redirects = 0) {
       // pipe respeta el backpressure (clave para archivos de cientos de MB)
       res.pipe(file);
       // Resolver solo cuando el archivo se ha escrito por completo en disco
-      file.on('finish', () => file.close(() => resolve()));
+      file.on('finish', () => {
+        if (signal) signal.removeEventListener('abort', onAbort);
+        file.close(() => resolve());
+      });
       file.on('error', (err) => { fs.unlink(destPath, () => reject(err)); });
       res.on('error', reject);
-    }).on('error', reject);
+    });
+    req.on('error', reject);
   });
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Download, Trash2, ExternalLink } from 'lucide-react';
+import { Play, Download, Trash2, ExternalLink, X } from 'lucide-react';
 
 export default function Hero({ game, isDesktop, onLibraryChange }) {
   const [status, setStatus] = useState('idle'); // idle, downloading, extracting, installed
@@ -51,7 +51,12 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
       setStatus('downloading');
       setProgress(0);
       setError(null);
-      await window.launcher.install(game.id);
+      const res = await window.launcher.install(game.id);
+      if (res && res.cancelled) {
+        setStatus('idle');
+        setProgress(0);
+        return;
+      }
       setStatus('installed');
       setHasUpdate(false);
       // Recargar la biblioteca para reflejar el nuevo estado (sidebar, versión)
@@ -61,6 +66,12 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
       setError(e.message);
       setStatus('idle');
     }
+  };
+
+  const handleCancel = async () => {
+    try { await window.launcher.cancelInstall(game.id); } catch (_) {}
+    setStatus('idle');
+    setProgress(0);
   };
 
   const handlePlay = async () => {
@@ -165,14 +176,21 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
             )}
 
             {(status === 'downloading' || status === 'extracting') && (
-              <div style={{ flex: 1, maxWidth: '400px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem' }}>
-                  <span>{status === 'extracting' ? 'Descomprimiendo e instalando...' : 'Descargando...'}</span>
-                  <span>{progress}%</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, maxWidth: '460px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem' }}>
+                    <span>{status === 'extracting' ? 'Descomprimiendo e instalando...' : 'Descargando...'}</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="progress-container">
+                    <div className="progress-fill" style={{ width: `${progress}%`, '--accent': game.accentColor }}></div>
+                  </div>
                 </div>
-                <div className="progress-container">
-                  <div className="progress-fill" style={{ width: `${progress}%`, '--accent': game.accentColor }}></div>
-                </div>
+                {status === 'downloading' && (
+                  <button className="btn-secondary" onClick={handleCancel} title="Cancelar descarga" style={{ padding: '10px 14px', display: 'flex', alignItems: 'center' }}>
+                    <X size={18} />
+                  </button>
+                )}
               </div>
             )}
             
