@@ -126,12 +126,15 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
         </div>
 
         {game.heroLogo && !logoError ? (
-          <img
-            className="hero-logo-img reveal reveal-2"
-            src={game.heroLogo}
-            alt={game.name}
-            onError={() => setLogoError(true)}
-          />
+          <div className="reveal reveal-2" style={{ marginBottom: '24px' }}>
+            <img
+              className="hero-logo-img"
+              src={game.heroLogo}
+              alt={game.name}
+              onError={() => setLogoError(true)}
+            />
+            <h2 className="hero-name-under">{game.name}</h2>
+          </div>
         ) : (
           <h1 className="hero-title reveal reveal-2" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '24px' }}>
             {game.name}

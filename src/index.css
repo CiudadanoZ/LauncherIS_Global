@@ -224,11 +224,24 @@ h1, h2, h3 {
 
 /* Logo del juego (imagen) en el Hero */
 .hero-logo-img {
+  display: block;
   max-width: min(560px, 100%);
-  max-height: 200px;
+  max-height: 190px;
   object-fit: contain;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   filter: drop-shadow(0 10px 34px rgba(0,0,0,0.65));
+}
+
+/* Nombre del juego bajo el logo (para verlo siempre en claro) */
+.hero-name-under {
+  font-family: var(--font-epic);
+  font-weight: 700;
+  font-size: 1.7rem;
+  letter-spacing: 1.5px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+  margin: 0;
 }
 
 /* Panel de novedades: eventos y notas del parche (contenido remoto) */
