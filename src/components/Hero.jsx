@@ -6,6 +6,7 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [hasUpdate, setHasUpdate] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     // Reset state when game changes
@@ -124,9 +125,18 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
           {game.tag}
         </div>
 
-        <h1 className="hero-title reveal reveal-2" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '24px' }}>
-          {game.name}
-        </h1>
+        {game.heroLogo && !logoError ? (
+          <img
+            className="hero-logo-img reveal reveal-2"
+            src={game.heroLogo}
+            alt={game.name}
+            onError={() => setLogoError(true)}
+          />
+        ) : (
+          <h1 className="hero-title reveal reveal-2" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '24px' }}>
+            {game.name}
+          </h1>
+        )}
 
         <p className="reveal reveal-3" style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px', lineHeight: '1.6', textShadow: '0 2px 10px rgba(0,0,0,0.5)', whiteSpace: 'pre-wrap' }}>
           {game.description}
@@ -148,6 +158,43 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
             </div>
           )}
         </div>
+
+        {game.news && ((game.news.events && game.news.events.length > 0) || (game.news.patchNotes && game.news.patchNotes.length > 0)) && (
+          <div className="news-panel reveal reveal-5">
+            {game.news.events && game.news.events.length > 0 && (
+              <div className="news-section">
+                <div className="news-section-title" style={{ color: game.accentColor }}>Eventos</div>
+                {game.news.events.map((ev, i) => (
+                  <div className="event-card" key={i} style={{ borderColor: `${game.accentColor}40` }}>
+                    <div className="news-head">
+                      <span className="news-item-title">{ev.title}</span>
+                      {ev.date && <span className="news-date">{ev.date}</span>}
+                    </div>
+                    {ev.body && <div className="news-body">{ev.body}</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+            {game.news.patchNotes && game.news.patchNotes.length > 0 && (
+              <div className="news-section">
+                <div className="news-section-title" style={{ color: game.accentColor }}>Notas del parche</div>
+                {game.news.patchNotes.map((pn, i) => (
+                  <div className="patch-entry" key={i}>
+                    <div className="news-head">
+                      <span className="patch-version" style={{ background: `${game.accentColor}22`, color: game.accentColor, border: `1px solid ${game.accentColor}55` }}>v{pn.version}</span>
+                      {pn.date && <span className="news-date">{pn.date}</span>}
+                    </div>
+                    {pn.changes && (
+                      <ul className="patch-changes">
+                        {pn.changes.map((c, j) => <li key={j}>{c}</li>)}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="glass-panel reveal reveal-5" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', marginTop: '40px' }}>
