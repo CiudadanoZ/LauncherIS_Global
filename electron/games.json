@@ -78,7 +78,7 @@
       "accentColor": "#E74C3C",
       "artBg": "linear-gradient(160deg, #150010 0%, #250520 40%, #200010 70%, #100008 100%)",
       "heroBg": "linear-gradient(135deg, #100005 0%, #200818 40%, #180010 70%, #0A0005 100%)",
-      "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-shadow-world.png",
+      "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-darkness.png",
       "githubRepo": "CiudadanoZ/tsw-darkness",
       "version": "1.0.0",
       "news": {
