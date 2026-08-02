@@ -21,17 +21,23 @@
         "events": [
           {
             "title": "¡Lanzamiento oficial!",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "body": "The Shadow World Origin ya está disponible para descargar desde el launcher."
+          },
+          {
+            "title": "Próximamente: expansión",
+            "date": "2026-08-20",
+            "body": "Muy pronto llegará la expansión «Más allá de Ciudad Esperanza»."
           }
         ],
         "patchNotes": [
           {
             "version": "1.0.0",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "changes": [
-              "Lanzamiento inicial del Capítulo I.",
-              "Historia principal completa."
+              "Toda la campaña original disponible.",
+              "Versión del proyecto original remasterizada.",
+              "Revive los Orígenes de The Shadow World."
             ]
           }
         ]
@@ -57,7 +63,7 @@
         "patchNotes": [
           {
             "version": "1.0.0",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "changes": [
               "Lanzamiento inicial del Capítulo II."
             ]
@@ -85,7 +91,7 @@
         "events": [
           {
             "title": "En desarrollo",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "body": "El capítulo final de la saga está en camino. Incluirá la expansión Las Armas del Viejo Mundo."
           }
         ],
@@ -111,14 +117,14 @@
         "events": [
           {
             "title": "Temporada 3: Guerra de Banderas",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "body": "¡Ya disponible! Nuevo contenido competitivo y recompensas de temporada."
           }
         ],
         "patchNotes": [
           {
             "version": "0.3.5",
-            "date": "2026-08-01",
+            "date": "2026-08-20",
             "changes": [
               "Añadido el modo The Shadow World Saga (MMORPG y supervivencia).",
               "Equilibrado de progresión idle."
