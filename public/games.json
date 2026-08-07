@@ -143,6 +143,44 @@
           }
         ]
       }
+    },
+    {
+      "id": "ciudadela-valdoria",
+      "name": "Ciudadela de Valdoria",
+      "tag": "MMORPG 3D · Alpha",
+      "description": "MMORPG 3D con vista cenital estilo Diablo. Crea tu cuenta y tus héroes (persistidos en el servidor) y entra desde cualquier equipo a la Ciudadela de Valdoria: un mundo abierto con seis comarcas, criptas, jefes y botín legendario.\nCombina raza y especialización, sube de nivel y reparte talentos. Gremios, comercio entre jugadores, casa de subastas, grupos de caza, JcJ opcional, monturas, pesca y cocina.\nEn fase alpha.",
+      "engine": "Web 3D (Three.js)",
+      "genre": "MMORPG",
+      "size": "En la nube",
+      "glyph": "CV",
+      "accentColor": "#E67E22",
+      "artBg": "linear-gradient(160deg, #140A02 0%, #241505 40%, #1A1508 70%, #0A0602 100%)",
+      "heroBg": "linear-gradient(135deg, #0F0802 0%, #201203 40%, #180F05 70%, #080502 100%)",
+      "webUrl": "https://ciudadela-valdoria.onrender.com/",
+      "version": "0.1.0",
+      "news": {
+        "events": [
+          {
+            "title": "¡Alpha disponible!",
+            "date": "2026-08-20",
+            "body": "Ciudadela de Valdoria ya se puede jugar online desde el navegador."
+          }
+        ],
+        "patchNotes": [
+          {
+            "version": "0.1.0",
+            "date": "2026-08-20",
+            "changes": [
+              "Alpha jugable: MMORPG 3D con cuentas y personajes persistidos en el servidor.",
+              "Dos reinos (Valdoria y Penumbra), 4 razas y 3 especializaciones con árbol de talentos.",
+              "Mundo abierto con seis comarcas, criptas, jefes y botín legendario.",
+              "Gremios, comercio entre jugadores, casa de subastas y grupos de caza.",
+              "JcJ opcional, monturas, viaje rápido, pesca y cocina.",
+              "Evento de mundo: el Coloso de Valdoria."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
