@@ -156,6 +156,7 @@
       "accentColor": "#E67E22",
       "artBg": "linear-gradient(160deg, #140A02 0%, #241505 40%, #1A1508 70%, #0A0602 100%)",
       "heroBg": "linear-gradient(135deg, #0F0802 0%, #201203 40%, #180F05 70%, #080502 100%)",
+      "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/ciudadela-valdoria.png",
       "webUrl": "https://ciudadela-valdoria.onrender.com/",
       "version": "0.1.0",
       "news": {
