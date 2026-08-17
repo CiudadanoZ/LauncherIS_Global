@@ -158,6 +158,7 @@
       "heroBg": "linear-gradient(135deg, #0F0802 0%, #201203 40%, #180F05 70%, #080502 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/ciudadela-valdoria.png",
       "webUrl": "https://ciudadela-valdoria.onrender.com/",
+      "launchNotice": "El servidor puede tardar hasta un minuto en despertar la primera vez tras un rato inactivo. Espera con tranquilidad en el navegador: no es un error, la partida cargará en cuanto el servidor esté listo.",
       "version": "0.1.0",
       "news": {
         "events": [

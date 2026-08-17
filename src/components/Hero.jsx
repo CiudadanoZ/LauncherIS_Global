@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Download, Trash2, ExternalLink, X } from 'lucide-react';
+import { Play, Download, Trash2, ExternalLink, X, Info } from 'lucide-react';
 
 export default function Hero({ game, isDesktop, onLibraryChange }) {
   const [status, setStatus] = useState('idle'); // idle, downloading, extracting, installed
@@ -7,6 +7,7 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
   const [error, setError] = useState(null);
   const [hasUpdate, setHasUpdate] = useState(false);
   const [logoError, setLogoError] = useState(false);
+  const [notice, setNotice] = useState(null);
 
   useEffect(() => {
     // Reset state when game changes
@@ -85,13 +86,15 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
     }
   };
 
-  // Juego web (alojado, p. ej. en Vercel): abre la URL en el navegador.
+  // Juego web (alojado, p. ej. en Vercel o Render): abre la URL en el navegador.
   const handlePlayWeb = () => {
     if (isDesktop && window.launcher) {
       window.launcher.openLink(game.webUrl);
     } else {
       window.open(game.webUrl, '_blank', 'noopener');
     }
+    // Aviso opcional (p. ej. servidores que tardan en "despertar")
+    if (game.launchNotice) setNotice(game.launchNotice);
   };
 
   const handleUninstall = async () => {
@@ -199,6 +202,25 @@ export default function Hero({ game, isDesktop, onLibraryChange }) {
           </div>
         )}
       </div>
+
+      {notice && (
+        <div style={{
+          display: 'flex', alignItems: 'flex-start', gap: '12px',
+          padding: '14px 18px', marginTop: '24px', borderRadius: '12px',
+          background: `${game.accentColor}1A`, border: `1px solid ${game.accentColor}66`,
+          color: 'rgba(255,255,255,0.92)', fontSize: '0.92rem', lineHeight: '1.5', maxWidth: '640px'
+        }}>
+          <Info size={20} style={{ color: game.accentColor, flexShrink: 0, marginTop: '1px' }} />
+          <span style={{ flex: 1 }}>{notice}</span>
+          <button
+            onClick={() => setNotice(null)}
+            title="Entendido"
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0, display: 'flex' }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
 
       <div className="glass-panel reveal reveal-5" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', marginTop: '40px' }}>
         {game.comingSoon ? (
