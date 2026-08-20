@@ -57,7 +57,7 @@
       "heroBg": "linear-gradient(135deg, #0A0318 0%, #180825 40%, #0F1020 70%, #050310 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-shadow-world.png",
       "githubRepo": "CiudadanoZ/tsw-revival",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "news": {
         "events": [
           {
@@ -68,15 +68,23 @@
           {
             "title": "Expansión: Path of Pain",
             "date": "2026-08-20",
-            "body": "El 20 de agosto recibe su última expansión de contenido: «Path of Pain»."
+            "body": "Ya disponible la última expansión de contenido: «Path of Pain». Actualiza el juego desde el launcher para jugarla."
           }
         ],
         "patchNotes": [
           {
+            "version": "1.1.0",
+            "date": "2026-08-20",
+            "changes": [
+              "Nueva expansión «Path of Pain» con todo su contenido.",
+              "Actualiza desde el launcher para jugarla."
+            ]
+          },
+          {
             "version": "1.0.0",
             "date": "2026-08-20",
             "changes": [
-              "Ya disponible todo el contenido de la expansión «Path of Pain»."
+              "Lanzamiento del Capítulo II."
             ]
           }
         ]
