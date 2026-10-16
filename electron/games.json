@@ -15,6 +15,7 @@
       "artBg": "linear-gradient(160deg, #05080F 0%, #0D1525 40%, #151030 70%, #050810 100%)",
       "heroBg": "linear-gradient(135deg, #050810 0%, #0D1830 40%, #081525 70%, #030810 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-origin.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/tsw-origin.png",
       "githubRepo": "CiudadanoZ/tsw-origin",
       "version": "1.0.0",
       "news": {
@@ -56,6 +57,8 @@
       "artBg": "linear-gradient(160deg, #100520 0%, #1A0830 40%, #0F1525 70%, #050510 100%)",
       "heroBg": "linear-gradient(135deg, #0A0318 0%, #180825 40%, #0F1020 70%, #050310 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-shadow-world.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/tsw-revival.png",
+      "featured": true,
       "githubRepo": "CiudadanoZ/tsw-revival",
       "version": "1.1.0",
       "news": {
@@ -104,6 +107,7 @@
       "artBg": "linear-gradient(160deg, #150010 0%, #250520 40%, #200010 70%, #100008 100%)",
       "heroBg": "linear-gradient(135deg, #100005 0%, #200818 40%, #180010 70%, #0A0005 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-darkness.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/tsw-darkness.png",
       "githubRepo": "CiudadanoZ/tsw-darkness",
       "version": "1.0.0",
       "news": {
@@ -130,6 +134,7 @@
       "artBg": "linear-gradient(160deg, #081008 0%, #102510 40%, #0A2015 70%, #050F05 100%)",
       "heroBg": "linear-gradient(135deg, #051008 0%, #0D2510 40%, #081A10 70%, #040C05 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/reinos-aethemoor.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/aethermoor.png",
       "webUrl": "https://aethermoor-idle.vercel.app",
       "version": "0.3.5",
       "news": {
@@ -165,6 +170,8 @@
       "artBg": "linear-gradient(160deg, #140A02 0%, #241505 40%, #1A1508 70%, #0A0602 100%)",
       "heroBg": "linear-gradient(135deg, #0F0802 0%, #201203 40%, #180F05 70%, #080502 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/ciudadela-valdoria.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/valdoria.png",
+      "featured": true,
       "webUrl": "https://ciudadela-valdoria.onrender.com/",
       "launchNotice": "El servidor puede tardar hasta un minuto en despertar la primera vez tras un rato inactivo. Espera con tranquilidad en el navegador: no es un error, la partida cargará en cuanto el servidor esté listo.",
       "version": "0.1.0",
@@ -187,6 +194,43 @@
               "Gremios, comercio entre jugadores, casa de subastas y grupos de caza.",
               "JcJ opcional, monturas, viaje rápido, pesca y cocina.",
               "Evento de mundo: el Coloso de Valdoria."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "noche-eterna",
+      "name": "La Noche Eterna",
+      "tag": "Novela visual · Pixel Art",
+      "description": "Nueva Berlín, 2040. De día sellas destinos en el Ministerio de Registro; de noche, conspiras con la resistencia.\nUn juego narrativo en pixel art donde cada decisión cambia el rumbo de la historia. Demo jugable gratis en el navegador.",
+      "engine": "Web (Pixel Art)",
+      "genre": "Narrativo / Aventura",
+      "size": "En la nube",
+      "glyph": "NE",
+      "accentColor": "#2E86AB",
+      "artBg": "linear-gradient(160deg, #04080C 0%, #0A1622 40%, #0C1A26 70%, #04080C 100%)",
+      "heroBg": "linear-gradient(135deg, #04080C 0%, #0A1622 40%, #0C1A26 70%, #04080C 100%)",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/noche-eterna/cabecera.png",
+      "featured": true,
+      "webUrl": "https://ciudadanoz.github.io/imperiodelossunos.github.io/NocheEterna/",
+      "version": "Demo",
+      "news": {
+        "events": [
+          {
+            "title": "Demo disponible",
+            "date": "2026-10-16",
+            "body": "Ya puedes jugar gratis la demo de La Noche Eterna directamente en el navegador."
+          }
+        ],
+        "patchNotes": [
+          {
+            "version": "Demo",
+            "date": "2026-10-16",
+            "changes": [
+              "Primeros días y noches jugables en Nueva Berlín.",
+              "Sistema de decisiones con múltiples finales.",
+              "Pixel art y banda sonora originales."
             ]
           }
         ]
