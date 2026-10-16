@@ -4,6 +4,7 @@ import TopBar from './components/TopBar';
 import Library from './components/Library';
 import NewsFeed from './components/NewsFeed';
 import GameDetail from './components/GameDetail';
+import Friends from './components/Friends';
 import './index.css';
 
 // Fallback para la versión web (sin Electron)
@@ -128,6 +129,7 @@ function App() {
 
         {view === 'library' && <Library games={games} onSelect={openGame} />}
         {view === 'news' && <NewsFeed games={games} onSelect={openGame} />}
+        {view === 'friends' && <Friends />}
         {inDetail && (
           <GameDetail
             key={selectedGame.id}

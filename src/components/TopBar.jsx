@@ -3,6 +3,7 @@ import { Minus, Square, X, Library, Newspaper, Users } from 'lucide-react';
 const TABS = [
   { id: 'library', label: 'Biblioteca', Icon: Library },
   { id: 'news', label: 'Novedades', Icon: Newspaper },
+  { id: 'friends', label: 'Amigos', Icon: Users },
 ];
 
 export default function TopBar({ view, onNavigate, isDesktop }) {
@@ -23,11 +24,6 @@ export default function TopBar({ view, onNavigate, isDesktop }) {
             {label}
           </button>
         ))}
-        <button className="topbar-tab disabled" disabled title="Próximamente: amigos y chat">
-          <Users size={17} />
-          Amigos
-          <span className="soon-pill">Pronto</span>
-        </button>
       </nav>
 
       <div className="topbar-right">
