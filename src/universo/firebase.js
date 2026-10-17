@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore, collection, query, where, orderBy, onSnapshot,
-  addDoc, getDocs, doc, getDoc,
+  addDoc, getDocs, doc, getDoc, updateDoc,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -112,6 +112,30 @@ export const Universo = {
         .sort((a, b) => a.timestamp - b.timestamp);
       callback(msgs);
     }, (err) => console.error('onMessages', err));
+  },
+
+  // Notificaciones (proclamas) dirigidas a mí.
+  onNotifications(callback) {
+    const user = auth.currentUser;
+    if (!user) return () => {};
+    const q = query(collection(db, 'notifications'), where('recipientUid', '==', user.uid));
+    return onSnapshot(q, (snapshot) => {
+      const notifs = snapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => b.timestamp - a.timestamp);
+      callback(notifs);
+    }, (err) => console.error('onNotifications', err));
+  },
+
+  async markNotificationsRead() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDocs(query(
+      collection(db, 'notifications'),
+      where('recipientUid', '==', user.uid),
+      where('read', '==', false),
+    ));
+    await Promise.all(snap.docs.map(d => updateDoc(doc(db, 'notifications', d.id), { read: true })));
   },
 
   async sendMessage(myHandle, targetHandle, text) {

@@ -78,7 +78,7 @@ export default function GameDetail({ game, isDesktop, onLibraryChange, onBack })
       </button>
 
       <section className="detail-banner">
-        <div className="detail-banner-bg" style={{ backgroundImage: game.cover ? `url("${game.cover}")` : game.artBg }}></div>
+        <div className="detail-banner-bg" style={{ backgroundImage: game.banner ? `url("${game.banner}")` : game.artBg }}></div>
         <div className="detail-banner-shade"></div>
         <div className="detail-banner-inner">
           <div className="detail-headline">

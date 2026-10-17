@@ -27,7 +27,7 @@ export default function Library({ games, onSelect }) {
           style={{ '--accent': hero.accentColor }}
           onClick={() => onSelect(hero)}
         >
-          <div className="featured-bg" style={{ backgroundImage: hero.cover ? `url("${hero.cover}")` : hero.artBg }}></div>
+          <div className="featured-bg" style={{ backgroundImage: hero.banner ? `url("${hero.banner}")` : (hero.cover ? `url("${hero.cover}")` : hero.artBg) }}></div>
           <div className="featured-shade"></div>
           <div className="featured-content">
             <span className="featured-kicker">Destacado</span>

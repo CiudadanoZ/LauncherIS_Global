@@ -1,4 +1,5 @@
 import { Minus, Square, X, Library, Newspaper, Users } from 'lucide-react';
+import Notifications from './Notifications';
 
 const TABS = [
   { id: 'library', label: 'Biblioteca', Icon: Library },
@@ -27,6 +28,7 @@ export default function TopBar({ view, onNavigate, isDesktop }) {
       </nav>
 
       <div className="topbar-right">
+        <Notifications />
         {isDesktop && (
           <div className="window-controls">
             <button className="window-btn" onClick={() => window.launcher.minimize()} title="Minimizar">
