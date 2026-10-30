@@ -38,6 +38,44 @@
       }
     },
     {
+      "id": "slasher",
+      "name": "Slasher",
+      "tag": "Edición Halloween · Multijugador",
+      "description": "4 presas. 1 asesino. Una casa de la que no se sale.\nJuego de terror multijugador por turnos en el navegador: cuatro supervivientes buscan las llaves para escapar en la furgoneta mientras un asesino los caza. Salas privadas con código, cuatro clases con habilidades propias y tres poderes del asesino. Si una sola presa escapa, ganáis todas.",
+      "engine": "Web (Multijugador)",
+      "genre": "Terror / Multijugador",
+      "size": "En la nube",
+      "glyph": "SL",
+      "accentColor": "#B71C1C",
+      "artBg": "linear-gradient(160deg, #160204 0%, #2A0608 40%, #1A0404 70%, #0A0202 100%)",
+      "heroBg": "linear-gradient(135deg, #120203 0%, #260507 40%, #180303 70%, #080102 100%)",
+      "cover": "https://slasher-juego.vercel.app/og-image.jpg",
+      "banner": "https://slasher-juego.vercel.app/og-image.jpg",
+      "featured": true,
+      "webUrl": "https://slasher-juego.vercel.app",
+      "version": "1.0.0",
+      "news": {
+        "events": [
+          {
+            "title": "¡Especial de Halloween!",
+            "date": "2026-11-01",
+            "body": "Slasher ya está disponible: reúne a 4 amigos, cread una sala con código y sobrevivid a la noche. Se juega gratis en el navegador."
+          }
+        ],
+        "patchNotes": [
+          {
+            "version": "1.0.0",
+            "date": "2026-11-01",
+            "changes": [
+              "Lanzamiento: 4 supervivientes contra 1 asesino.",
+              "Salas privadas con código, 4 clases y 3 poderes del asesino.",
+              "Pánico, ruido y rastros de sangre; turnos de 90 s."
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "tsw-origin",
       "name": "The Shadow World Origin",
       "tag": "Saga The Shadow World · Capítulo I",
