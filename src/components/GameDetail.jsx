@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Play, Download, Trash2, ExternalLink, X, Info, ArrowLeft } from 'lucide-react';
+import { Play, Download, Trash2, ExternalLink, X, Info, ArrowLeft, ChevronRight } from 'lucide-react';
 
-export default function GameDetail({ game, isDesktop, onLibraryChange, onBack }) {
+export default function GameDetail({ game, games, isDesktop, onLibraryChange, onBack, onOpenGame }) {
   const [status, setStatus] = useState('idle'); // idle, downloading, extracting, installed
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -168,6 +168,34 @@ export default function GameDetail({ game, isDesktop, onLibraryChange, onBack })
       <div className="detail-body">
         <div className="detail-main">
           <p className="detail-desc reveal reveal-4">{game.description}</p>
+
+          {game.collection && Array.isArray(game.members) && (
+            <div className="chapters reveal reveal-4">
+              <h3 className="chapters-title">Capítulos incluidos</h3>
+              {game.members.map(m => {
+                const ch = (games || []).find(g => g.id === m.id);
+                if (!ch) return null;
+                const badge = ch.comingSoon
+                  ? { t: 'Próximamente', c: 'soon' }
+                  : ch.installed
+                    ? { t: 'Instalado', c: 'installed' }
+                    : { t: 'Descargar', c: 'download' };
+                const ver = ch.installedVersion || ch.version;
+                return (
+                  <button key={m.id} className="chapter-row" style={{ '--accent': ch.accentColor }} onClick={() => onOpenGame && onOpenGame(ch)}>
+                    <div className="chapter-glyph" style={{ background: ch.accentColor }}>{ch.glyph}</div>
+                    <div className="chapter-info">
+                      <span className="chapter-name">{ch.name}</span>
+                      <span className="chapter-meta">{ch.size}{ver ? ` · v${ver}` : ''}</span>
+                    </div>
+                    <span className={`chapter-badge ${badge.c}`}>{badge.t}</span>
+                    <ChevronRight size={18} className="chapter-chevron" />
+                  </button>
+                );
+              })}
+              <p className="chapters-hint">Instala al menos un capítulo para poder jugar desde el lobby. Tus partidas anteriores se conservan.</p>
+            </div>
+          )}
 
           {hasNews && (
             <div className="news-panel reveal reveal-5">

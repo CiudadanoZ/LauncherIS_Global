@@ -3,6 +3,41 @@
   "studio": "Imperio de los Sueños",
   "games": [
     {
+      "id": "tsw-saga",
+      "name": "The Shadow World",
+      "tag": "Saga · Origin + Revival",
+      "description": "La saga The Shadow World reunida en un solo lugar: un lobby desde el que acceder a todos sus capítulos.\n· Origin — donde comenzó todo.\n· Revival: Path of Pain — el camino del dolor.\nInstala los capítulos que quieras desde aquí. Tus partidas se conservan intactas.",
+      "engine": "RPG Maker MV",
+      "genre": "RPG",
+      "size": "Lobby 157 MB + capítulos",
+      "glyph": "TSW",
+      "accentColor": "#9B59B6",
+      "artBg": "linear-gradient(160deg, #100520 0%, #1A0830 40%, #0F1525 70%, #050510 100%)",
+      "heroBg": "linear-gradient(135deg, #0A0318 0%, #180825 40%, #0F1020 70%, #050310 100%)",
+      "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-shadow-world.png",
+      "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/saga_hero.jpg",
+      "banner": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/saga_hero.jpg",
+      "featured": true,
+      "githubRepo": "CiudadanoZ/tsw-saga",
+      "exeName": "Game.exe",
+      "version": "1.0.0",
+      "collection": true,
+      "members": [
+        { "id": "tsw-origin", "lobbyId": "origin" },
+        { "id": "tsw-revival", "lobbyId": "revival" }
+      ],
+      "news": {
+        "events": [
+          {
+            "title": "La saga, unificada",
+            "date": "2026-10-30",
+            "body": "Origin y Revival ahora se abren desde un mismo lugar. Instala la saga y sigue justo donde lo dejaste: tus partidas se conservan."
+          }
+        ],
+        "patchNotes": []
+      }
+    },
+    {
       "id": "tsw-origin",
       "name": "The Shadow World Origin",
       "tag": "Saga The Shadow World · Capítulo I",
@@ -17,6 +52,8 @@
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-origin.png",
       "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/tsw-origin.png",
       "githubRepo": "CiudadanoZ/tsw-origin",
+      "hidden": true,
+      "partOf": "tsw-saga",
       "version": "1.0.0",
       "news": {
         "events": [
@@ -58,8 +95,9 @@
       "heroBg": "linear-gradient(135deg, #0A0318 0%, #180825 40%, #0F1020 70%, #050310 100%)",
       "heroLogo": "https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Global/main/public/logos/tsw-shadow-world.png",
       "cover": "https://ciudadanoz.github.io/imperiodelossunos.github.io/img/launcher/tsw-revival.png",
-      "featured": true,
       "githubRepo": "CiudadanoZ/tsw-revival",
+      "hidden": true,
+      "partOf": "tsw-saga",
       "version": "1.1.0",
       "news": {
         "events": [

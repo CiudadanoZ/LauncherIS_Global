@@ -3,7 +3,8 @@ import { ChevronRight } from 'lucide-react';
 import GameCard from './GameCard';
 
 export default function Library({ games, onSelect }) {
-  const featured = games.filter(g => g.featured);
+  const visible = games.filter(g => !g.hidden);
+  const featured = visible.filter(g => g.featured);
   const [idx, setIdx] = useState(0);
   const [logoError, setLogoError] = useState(false);
 
@@ -59,7 +60,7 @@ export default function Library({ games, onSelect }) {
       <section className="shelf">
         <h2 className="shelf-title">Todos los juegos</h2>
         <div className="game-grid">
-          {games.map(g => (
+          {visible.map(g => (
             <GameCard key={g.id} game={g} onSelect={onSelect} />
           ))}
         </div>

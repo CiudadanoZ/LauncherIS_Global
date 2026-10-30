@@ -292,6 +292,27 @@ ipcMain.handle('games:cancelInstall', (_, gameId) => {
   return { cancelled: false };
 });
 
+// Busca el Game.exe de un juego instalado (raíz o un nivel de subcarpeta).
+function findGameExe(dir) {
+  const names = ['Game.exe', 'game.exe'];
+  for (const name of names) {
+    const c = path.join(dir, name);
+    if (fs.existsSync(c)) return c;
+  }
+  try {
+    for (const f of fs.readdirSync(dir)) {
+      const sub = path.join(dir, f);
+      if (fs.statSync(sub).isDirectory()) {
+        for (const name of names) {
+          const c = path.join(sub, name);
+          if (fs.existsSync(c)) return c;
+        }
+      }
+    }
+  } catch (e) { /* ignorar */ }
+  return null;
+}
+
 // Lanzar juego
 ipcMain.handle('games:launch', async (_, gameId) => {
   const config = await getGamesConfig();
@@ -305,6 +326,24 @@ ipcMain.handle('games:launch', async (_, gameId) => {
     const installed = state.installedGames[gameId];
     if (!installed) throw new Error('El juego no está instalado');
     gameDir = installed.path;
+  }
+
+  // Colección (saga): escribir tsw-paths.json con las rutas de los capítulos
+  // instalados para que el lobby los encuentre (reutiliza sus instalaciones,
+  // sin mover partidas).
+  if (game && game.collection && Array.isArray(game.members)) {
+    const paths = {};
+    for (const m of game.members) {
+      const inst = state.installedGames[m.id];
+      if (inst && inst.path) {
+        const exe = findGameExe(inst.path);
+        if (exe) paths[m.lobbyId || m.id] = exe;
+      }
+    }
+    try {
+      fs.writeFileSync(path.join(gameDir, 'tsw-paths.json'), JSON.stringify(paths, null, 2));
+      log('saga:paths', gameId, JSON.stringify(paths));
+    } catch (e) { log('saga:paths:error', gameId, e); }
   }
 
   // Buscar ejecutable

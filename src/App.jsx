@@ -134,9 +134,11 @@ function App() {
           <GameDetail
             key={selectedGame.id}
             game={selectedGame}
+            games={games}
             isDesktop={isDesktop}
             onLibraryChange={() => loadGames(selectedGame.id)}
             onBack={() => setView('library')}
+            onOpenGame={openGame}
           />
         )}
       </main>
