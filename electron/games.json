@@ -54,7 +54,7 @@
       "githubRepo": "CiudadanoZ/tsw-origin",
       "hidden": true,
       "partOf": "tsw-saga",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "news": {
         "events": [
           {
@@ -69,6 +69,14 @@
           }
         ],
         "patchNotes": [
+          {
+            "version": "1.1.0",
+            "date": "2026-10-31",
+            "changes": [
+              "Nueva versión de The Shadow World: Origin.",
+              "Actualiza desde el launcher para disfrutarla."
+            ]
+          },
           {
             "version": "1.0.0",
             "date": "2026-08-20",

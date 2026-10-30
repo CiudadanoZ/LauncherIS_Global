@@ -80,6 +80,47 @@ function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
+// Busca carpetas 'save' dentro de un directorio (hasta cierta profundidad),
+// sin descender dentro de las propias carpetas de partidas.
+function findSaveDirs(root, maxDepth = 4) {
+  const found = [];
+  (function walk(dir, depth) {
+    if (depth > maxDepth) return;
+    let entries;
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch (e) { return; }
+    for (const e of entries) {
+      if (!e.isDirectory()) continue;
+      const full = path.join(dir, e.name);
+      if (e.name.toLowerCase() === 'save') found.push(full);
+      else walk(full, depth + 1);
+    }
+  })(root, 0);
+  return found;
+}
+
+// Copia las partidas de una instalación anterior (oldDir) a la nueva (newDir),
+// conservando la ruta relativa. Si el juego declara preservePaths, se usan esas
+// rutas; si no, se autodetectan las carpetas 'save' (RPG Maker: www/save).
+function preserveSaves(oldDir, newDir, preservePaths) {
+  let rels;
+  if (Array.isArray(preservePaths) && preservePaths.length) {
+    rels = preservePaths.slice();
+  } else {
+    rels = findSaveDirs(oldDir).map(d => path.relative(oldDir, d));
+  }
+  for (const rel of rels) {
+    const from = path.join(oldDir, rel);
+    const to = path.join(newDir, rel);
+    if (!fs.existsSync(from)) continue;
+    try {
+      if (fs.existsSync(to)) fs.rmSync(to, { recursive: true, force: true });
+      ensureDir(path.dirname(to));
+      fs.cpSync(from, to, { recursive: true });
+      log('saves:preserved', rel);
+    } catch (e) { log('saves:preserve:item:error', rel, e); }
+  }
+}
+
 // --- Crear ventana principal ---
 function createWindow() {
   const saved = state.settings.windowBounds || {};
@@ -251,7 +292,14 @@ ipcMain.handle('games:install', async (_, gameId) => {
       if (hadOld) fs.renameSync(backupDir, gameDir); // restaurar versión previa
       throw swapErr;
     }
-    if (hadOld) fs.rmSync(backupDir, { recursive: true, force: true });
+    if (hadOld) {
+      // Preservar las partidas: copiar las carpetas 'save' de la versión
+      // anterior a la nueva antes de descartar la vieja (al actualizar no se
+      // pierde el progreso).
+      try { preserveSaves(backupDir, gameDir, game.preservePaths); }
+      catch (e) { log('saves:preserve:error', gameId, e); }
+      fs.rmSync(backupDir, { recursive: true, force: true });
+    }
 
     // Limpiar zip
     if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
