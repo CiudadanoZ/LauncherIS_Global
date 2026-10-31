@@ -50,7 +50,10 @@ const CONFIG_URL = 'https://raw.githubusercontent.com/CiudadanoZ/LauncherIS_Glob
 
 function getGamesConfig() {
   return new Promise((resolve) => {
-    https.get(CONFIG_URL, (res) => {
+    // Parámetro único + cabeceras no-cache: evita que la CDN de GitHub sirva
+    // una copia vieja del catálogo, para que los cambios se vean al instante.
+    const url = `${CONFIG_URL}?t=${Date.now()}`;
+    https.get(url, { headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
