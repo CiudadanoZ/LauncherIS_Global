@@ -96,6 +96,11 @@
       "news": {
         "events": [
           {
+            "title": "Gracias por la Guerrilla Game 2026",
+            "date": "2026-10-20",
+            "body": "Muchas de las mejoras de esta actualización las hemos detectado y añadido gracias a vuestro apoyo en la Guerrilla Game 2026. ¡Gracias!"
+          },
+          {
             "title": "¡Lanzamiento oficial!",
             "date": "2026-08-20",
             "body": "The Shadow World Origin ya está disponible para descargar desde el launcher."
@@ -109,10 +114,17 @@
         "patchNotes": [
           {
             "version": "1.1.0",
-            "date": "2026-10-31",
+            "date": "2026-10-20",
             "changes": [
-              "Nueva versión de The Shadow World: Origin.",
-              "Actualiza desde el launcher para disfrutarla."
+              "Nuevo sombreado e iluminación.",
+              "Movimiento del personaje mejorado.",
+              "Arreglada la aventurera (la jugadora femenina).",
+              "Nueva interfaz en menús y submenús.",
+              "Nuevas misiones diarias y semanales para la Temporada 1.",
+              "Arreglados bugs como habitaciones o misiones sin salida.",
+              "Correcciones ortográficas en todo el juego.",
+              "Rehecha la batalla contra el Rey Sombra (remake).",
+              "Próximamente: las batallas contra la Hija de la Oscuridad y el Rey Brujo."
             ]
           },
           {
